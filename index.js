@@ -6,6 +6,7 @@ const PORT = process.env.PORT || 3000;
 
 const API_KEY = process.env.TRACKER_API_KEY;
 
+console.log('Using API key:', API_KEY ? '***' + API_KEY.slice(-4) : 'MISSING');
 app.get('/', async (req, res) => {
   const { platform, username } = req.query;
 
@@ -33,10 +34,12 @@ app.get('/', async (req, res) => {
     const tier = twos.stats.tier.metadata.name;
 
     res.send(`${username}'s 2v2 MMR: ${mmr} (${tier})`);
-  } catch (error) {
-    console.error(error.response?.data || error.message);
-    res.send(`Could not fetch MMR for ${username}.`);
-  }
+} catch (error) {
+  console.error('Full error:', error);
+  console.error('Response data:', error.response?.data);
+  console.error('Status code:', error.response?.status);
+  res.send(`Could not fetch MMR for ${username}.`);
+}
 });
 
 app.listen(PORT, () => {
